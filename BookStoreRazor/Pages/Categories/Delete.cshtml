@@ -1,0 +1,33 @@
+﻿@page
+@model BookStoreRazor.Pages.Categories.DeleteModel
+<form method="post">
+    <input hidden asp-for="category.Id" />
+    <div class="container border">
+        <div class="row">
+            <h2 class="text-primary">Delete Category</h2>
+        </div>
+        <div class="row mb-3">
+            <div>
+                <label asp-for="category.Name"></label>
+                <input readonly class="form-control" asp-for="category.Name" />
+
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div>
+                <label asp-for="category.DisplayOrder"></label>
+                <input readonly class="form-control" asp-for="category.DisplayOrder" />
+
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-6 col-md-3">
+                <button asp-page="/Categories/Delete" class="btn btn-primary border form-control">Delete</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-page="/Categories/Index" class="btn btn-secondary border form-control">Back to List</a>
+            </div>
+        </div>
+    </div>
+</form>
+

@@ -1,0 +1,36 @@
+﻿@page
+@model BookStoreRazor.Pages.Categories.EditModel
+
+    <form method="post">
+    <input asp-for="category.Id" hidden />
+    <div class="container border">
+    <div class="row">
+        <h2 class="text-primary"> Edit Category</h2>
+    </div>
+    <div class="row mb-3">
+
+        <label asp-for="category.Name" class="p-1"></label>
+        <input asp-for="category.Name" />
+        <span asp-validation-for="category.Name" class="alert-danger"></span>
+
+    </div>
+        <div class="row mb-3">
+
+        <label asp-for="category.DisplayOrder"></label>
+        <input class="form-control" asp-for="category.DisplayOrder" />
+        <span asp-validation-for="category.DisplayOrder" class="alert-danger"></span>
+    
+    </div>
+    <div class="row pb-2">
+            <div class="col-6 col-md-3">
+            <button asp-page="/Categories/Edit" class="form-control btn-primary">Update</button>
+            </div>
+            <div class="col-6 col-md-3">
+            <a asp-page="/Categories/Index" class="form-control btn-secondary"> Back to List</a>
+        </div>
+        </div>
+    </div>
+</form>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+}
