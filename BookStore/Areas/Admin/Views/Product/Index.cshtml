@@ -1,0 +1,52 @@
+﻿@model List<Product>
+<div class="container">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Product List</h2>
+        </div>
+        <div class="col-6">
+            <a  asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-fill"> Create New Product</i>
+            </a>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Price</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model.OrderBy(p => p.Title))
+            {
+                <tr>
+                    <th>@obj.Title</th>
+                    <th>@obj.Author</th>
+                    <th>@obj.ISBN</th>
+                    <th>@obj.Price</th>
+                    <th></th>
+                    <th>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-action="Edit" class="btn btn-primary mx-2" asp-route-productId="@obj.Id">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+
+                            <a asp-action="Delete" class="btn btn-danger mx-2" asp-route-productId="@obj.Id">
+                                <i class="bi bi-trash-fill"></i>
+
+                            </a>
+                        </div>
+                    </th>
+                    
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+
+

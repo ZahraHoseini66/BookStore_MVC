@@ -1,5 +1,6 @@
 ﻿using BookStore.DataAccess.Repository.IRepository;
-using BookStoreWeb.Models;
+using BookStore.Models;
+using BookStore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
