@@ -5,13 +5,13 @@
             <h2 class="text-primary">Product List</h2>
         </div>
         <div class="col-6">
-            <a  asp-action="Create" class="btn btn-primary">
+            <a  asp-action="Upsert" class="btn btn-primary">
                 <i class="bi bi-plus-circle-fill"> Create New Product</i>
             </a>
         </div>
     </div>
-    <table class="table table-bordered table-striped">
-        <thead>
+    <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+         <thead>
             <tr>
                 <th>Title</th>
                 <th>Author</th>
@@ -20,7 +20,7 @@
                 <th>Category</th>
             </tr>
         </thead>
-        <tbody>
+      @*  <tbody>
             @foreach (var obj in Model.OrderBy(p => p.Title))
             {
                 <tr>
@@ -28,10 +28,10 @@
                     <th>@obj.Author</th>
                     <th>@obj.ISBN</th>
                     <th>@obj.Price</th>
-                    <th></th>
+                    <th>@obj.Category.Name</th>
                     <th>
                         <div class="w-75 btn-group" role="group">
-                            <a asp-action="Edit" class="btn btn-primary mx-2" asp-route-productId="@obj.Id">
+                            <a asp-action="Upsert" class="btn btn-primary mx-2" asp-route-productId="@obj.Id">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
 
@@ -45,8 +45,11 @@
                 </tr>
 
             }
-        </tbody>
+        </tbody> *@
     </table>
 </div>
+@section Scripts{
+<script src="~/js/product.js"></script>
+}
 
 

@@ -17,7 +17,23 @@ namespace BookStore.DataAccess.Repository
         }
         public void Update(Product obj)
         {
-            _db.Products.Update(obj);
+            var objFromDb = _db.Products.FirstOrDefault(p => p.Id == obj.Id);
+            if (objFromDb!=null)
+            {
+                objFromDb.Title = obj.Title;
+                objFromDb.Author = obj.Author;
+                objFromDb.ListPrice = obj.ListPrice;
+                objFromDb.Price = obj.Price;
+                objFromDb.Price50 = obj.Price50;
+                objFromDb.ISBN = obj.ISBN;
+                objFromDb.CategoryId = obj.CategoryId;
+                objFromDb.Description = obj.Description;
+                if (obj.ImageUrl != null)
+                {
+                    objFromDb.ImageUrl = obj.ImageUrl;
+                }
+            }
+           // _db.Products.Update(obj);
         }
     }
 }
