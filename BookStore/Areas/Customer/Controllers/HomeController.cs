@@ -20,7 +20,7 @@ namespace BookStoreWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _db.Product.GetAll();
+            IEnumerable<Product> products = _db.Product.GetAll(includeProperties:"Category");
             return View(products);
         }
 
@@ -33,6 +33,11 @@ namespace BookStoreWeb.Areas.Customer.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult Details(int productId)
+        {
+            Product product = _db.Product.Get(u => u.Id == productId, includeProperties: "Category");
+            return View(product);
         }
     }
 }
