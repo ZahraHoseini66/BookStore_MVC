@@ -3,12 +3,15 @@
 using BookStore.DataAccess;
 using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
+using BookStore.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BookStoreWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {
         private IUnitOfWork _unitOfWork;
