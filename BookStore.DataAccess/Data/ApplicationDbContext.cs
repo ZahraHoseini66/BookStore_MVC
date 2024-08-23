@@ -1,5 +1,6 @@
 ﻿//using BookStore.;
 using BookStore.Models;
+using BookStore.Models.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ namespace BookStore.DataAccess
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Company> Companies { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            base.OnModelCreating(modelBuilder);
@@ -25,7 +27,7 @@ namespace BookStore.DataAccess
                 new Category { Id = 3, Name = "History", DisplayOrder = 3 }
                 );
             modelBuilder.Entity<Product>().HasData(
-               new Product { 
+                new Product { 
                     Id = 1, 
                     Title = "Fortune of Time", 
                     Author="Billy Spark", 
@@ -111,6 +113,12 @@ namespace BookStore.DataAccess
                     CategoryId = 2,
                     ImageUrl = ""
                 }
+                );
+            modelBuilder.Entity<Company>().HasData(
+                new Company { Name = "DPI"      , City = "Tehran", Id = 1, PhoneNumber = "123456", PostalCode = "123456", State = "Tehran", StreetAddress = "Vila"    },
+                new Company { Name = "ToranjNet", City = "Tehran", Id = 2, PhoneNumber = "123456", PostalCode = "123456", State = "Tehran", StreetAddress = "Valiasr" },
+                new Company { Name = "company3" , City = "Tehran", Id = 3, PhoneNumber = "123456", PostalCode = "123456", State = "Tehran", StreetAddress = "Valiasr" },
+                new Company { Name = "company4" , City = "Tehran", Id = 4, PhoneNumber = "123456", PostalCode = "123456", State = "Tehran", StreetAddress = "Valiasr" }
                 );
 
         }

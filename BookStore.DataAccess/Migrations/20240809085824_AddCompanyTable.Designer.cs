@@ -4,16 +4,19 @@ using BookStore.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BookStore.DataAccess
+namespace BookStore.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240809085824_AddCompanyTable")]
+    partial class AddCompanyTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,6 +75,7 @@ namespace BookStore.DataAccess
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -79,62 +83,24 @@ namespace BookStore.DataAccess
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StreetAddress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            City = "Tehran",
-                            Name = "DPI",
-                            PhoneNumber = "123456",
-                            PostalCode = "123456",
-                            State = "Tehran",
-                            StreetAddress = "Vila"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            City = "Tehran",
-                            Name = "ToranjNet",
-                            PhoneNumber = "123456",
-                            PostalCode = "123456",
-                            State = "Tehran",
-                            StreetAddress = "Valiasr"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            City = "Tehran",
-                            Name = "company3",
-                            PhoneNumber = "123456",
-                            PostalCode = "123456",
-                            State = "Tehran",
-                            StreetAddress = "Valiasr"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            City = "Tehran",
-                            Name = "company4",
-                            PhoneNumber = "123456",
-                            PostalCode = "123456",
-                            State = "Tehran",
-                            StreetAddress = "Valiasr"
-                        });
                 });
 
             modelBuilder.Entity("BookStore.Models.Product", b =>
@@ -487,9 +453,6 @@ namespace BookStore.DataAccess
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -502,8 +465,6 @@ namespace BookStore.DataAccess
 
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -568,15 +529,6 @@ namespace BookStore.DataAccess
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BookStore.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("BookStore.Models.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }

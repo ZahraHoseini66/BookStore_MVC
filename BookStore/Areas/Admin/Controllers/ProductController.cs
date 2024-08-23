@@ -13,7 +13,7 @@ using System.Reflection.Metadata.Ecma335;
 namespace BookStoreWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
+    //[Authorize(Roles = SD.Role_Admin)]
 
     public class ProductController : Controller
     {
@@ -163,7 +163,7 @@ namespace BookStoreWeb.Areas.Admin.Controllers
             return Json(new { data = products });
 
         }
-        [HttpDelete]
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
             var productToBeDeleted = _unitOfWork.Product.Get(u=>u.Id == id);
