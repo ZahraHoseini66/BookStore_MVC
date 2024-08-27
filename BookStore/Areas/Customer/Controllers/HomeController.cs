@@ -1,8 +1,11 @@
 using BookStore.DataAccess.Repository;
 using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
+using BookStore.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BookStoreWeb.Areas.Customer.Controllers
 {
@@ -12,7 +15,7 @@ namespace BookStoreWeb.Areas.Customer.Controllers
         private readonly ILogger<HomeController> _logger;
         public IUnitOfWork _db;
 
-        public HomeController(ILogger<HomeController> logger,IUnitOfWork db)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork db)
         {
             _logger = logger;
             _db = db;
@@ -20,7 +23,7 @@ namespace BookStoreWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _db.Product.GetAll(includeProperties:"Category");
+            IEnumerable<Product> products = _db.Product.GetAll(includeProperties: "Category");
             return View(products);
         }
 
@@ -36,8 +39,37 @@ namespace BookStoreWeb.Areas.Customer.Controllers
         }
         public IActionResult Details(int productId)
         {
-            Product product = _db.Product.Get(u => u.Id == productId, includeProperties: "Category");
-            return View(product);
+
+            ShoppingCart cart = new()
+            {
+                Product = _db.Product.Get(u => u.Id == productId),
+                Count = 0,
+                ProductId = productId
+            };
+            return View(cart);
+        }
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart shoppingCart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            shoppingCart.ApplicationUserId=userId;
+            ShoppingCart shoppingCartDb=_db.ShoppingCart.Get(u=>u.ApplicationUserId == userId &&
+            u.ProductId == shoppingCart.ProductId);
+            if(shoppingCartDb != null)
+            { 
+                shoppingCartDb.Count += shoppingCart.Count;
+                _db.ShoppingCart.Update(shoppingCartDb);
+            }
+            
+            else
+                _db.ShoppingCart.Add(shoppingCart);
+            TempData["success"] = "Cart Updated successfully";
+            _db.Save();
+           
+          return RedirectToAction(nameof(Index));
+
         }
     }
 }
