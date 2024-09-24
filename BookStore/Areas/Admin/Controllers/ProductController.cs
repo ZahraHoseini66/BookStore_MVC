@@ -184,7 +184,7 @@ namespace BookStoreWeb.Areas.Admin.Controllers
             }
             _unitOfWork.Product.Remove(productToBeDeleted); 
             _unitOfWork.Save();
-            return Json(new { success = true, message = "Delete Succeessful" });
+            return Json(new { success = true, message = "Delete Successfully" });
 
         }
         #endregion

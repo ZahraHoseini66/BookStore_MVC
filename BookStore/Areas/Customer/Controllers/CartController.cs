@@ -82,7 +82,7 @@ namespace BookStoreWeb.Areas.Customer.Controllers
             {
                 // it is a company user
                 shoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayPayment;
-                shoppingCartVM.OrderHeader.OrderStatus = SD.StatusApprove;
+                shoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
 
             }
             foreach (var cart in shoppingCartVM.ShoppingCartList)

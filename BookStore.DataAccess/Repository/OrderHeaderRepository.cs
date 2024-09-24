@@ -21,5 +21,25 @@ namespace BookStore.DataAccess.Repository
         {
            _db.Update(obj);
         }
+
+        public void UpdateStatus(int id, string orderStatus)
+        {
+          OrderHeader order =  _db.OrderHeaders.FirstOrDefault(u => u.Id == id);
+            if (order != null)
+            {
+                order.OrderStatus=orderStatus;
+            }
+          
+        }
+        public void UpdateStatus(int id, string orderStatus,string paymentStatus)
+        {
+            OrderHeader order = _db.OrderHeaders.FirstOrDefault(u => u.Id == id);
+            if (order != null)
+            {
+                order.OrderStatus = orderStatus;
+                order.PaymentStatus = paymentStatus;
+            }
+
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace BookStore.Utilities
         public const string Role_Employee = "Employee";
 
         public const string StatusPending = "Pending";
-        public const string StatusApprove = "Approve";
+        public const string StatusApproved = "Approve";
         public const string StatusInProcess = "Processing";
         public const string StatusShipped = "Shipped";
         public const string StatusCancelled = "Cancelled";
