@@ -24,6 +24,14 @@ builder.Services.ConfigureApplicationCookie(Options =>
     Options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 
 });
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(Options =>
+{
+    Options.IdleTimeout = TimeSpan.FromMinutes(100);
+    //Options.Cookie.HttpOnly = true;
+    Options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 builder.Services.AddScoped<IEmailSender,EmailSender>();
@@ -44,6 +52,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",

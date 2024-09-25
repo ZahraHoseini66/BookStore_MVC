@@ -14,7 +14,7 @@ using System.Reflection.Metadata.Ecma335;
 namespace BookStoreWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = SD.Role_Admin)]
+    [Authorize(Roles = SD.Role_Admin)]
 
     public class ProductController : Controller
     {

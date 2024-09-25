@@ -115,6 +115,11 @@ namespace BookStoreWeb.Areas.Customer.Controllers
         
         public IActionResult OrderConfirmation(int id)
         {
+            OrderHeader orderHeader=_unitOfWork.OrderHeader.Get(u=>u.Id == id ,includeProperties:"ApplicationUser");
+            List<ShoppingCart> shoppingCarts=_unitOfWork.ShoppingCart.GetAll(u=> u.ApplicationUserId==orderHeader.ApplicationUserId).ToList();
+            _unitOfWork.ShoppingCart.RemoveRenge(shoppingCarts);
+            _unitOfWork.Save();
+            HttpContext.Session.Clear();
             return View(id);
         }
         public IActionResult Plus(int cartId)
@@ -123,6 +128,8 @@ namespace BookStoreWeb.Areas.Customer.Controllers
             cartFromDb.Count += 1;
             _unitOfWork.ShoppingCart.Update(cartFromDb);
             _unitOfWork.Save();
+            UpdateShoppingCartNumber(cartFromDb.ApplicationUserId);
+
             return RedirectToAction(nameof(Index));
         }
         public IActionResult Minus(int cartId)
@@ -138,14 +145,16 @@ namespace BookStoreWeb.Areas.Customer.Controllers
 
             }
             _unitOfWork.Save();
+            UpdateShoppingCartNumber(cartFromDb.ApplicationUserId);
+
             return RedirectToAction(nameof(Index));
         }
         public IActionResult Remove(int cartId)
         {
             var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
-
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
             _unitOfWork.Save();
+            UpdateShoppingCartNumber(cartFromDb.ApplicationUserId);
             return RedirectToAction(nameof(Index));
         }
 
@@ -158,6 +167,13 @@ namespace BookStoreWeb.Areas.Customer.Controllers
             else
                 return shoppingCart.Product.Price100;
 
+        }
+        private void UpdateShoppingCartNumber(string applicationUserId)
+        {
+           HttpContext.Session.SetInt32(SD.SessionCart,
+                  _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == applicationUserId).Count());
+
+            
         }
 
     }

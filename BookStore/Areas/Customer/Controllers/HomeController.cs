@@ -2,7 +2,9 @@ using BookStore.DataAccess.Repository;
 using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
 using BookStore.Models.Models;
+using BookStore.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -23,6 +25,7 @@ namespace BookStoreWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+           
             IEnumerable<Product> products = _db.Product.GetAll(includeProperties: "Category");
             return View(products);
         }
@@ -54,19 +57,27 @@ namespace BookStoreWeb.Areas.Customer.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-            shoppingCart.ApplicationUserId=userId;
+            shoppingCart.ApplicationUserId = userId;
             ShoppingCart shoppingCartDb=_db.ShoppingCart.Get(u=>u.ApplicationUserId == userId &&
             u.ProductId == shoppingCart.ProductId);
+
             if(shoppingCartDb != null)
             { 
                 shoppingCartDb.Count += shoppingCart.Count;
                 _db.ShoppingCart.Update(shoppingCartDb);
+             
             }
             
             else
+            { 
                 _db.ShoppingCart.Add(shoppingCart);
-            TempData["success"] = "Cart Updated successfully";
+              
+            }
             _db.Save();
+            HttpContext.Session.SetInt32(SD.SessionCart,
+                   _db.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
+            TempData["success"] = "Cart Updated successfully";
+          
            
           return RedirectToAction(nameof(Index));
 
