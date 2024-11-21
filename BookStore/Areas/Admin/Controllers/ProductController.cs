@@ -1,4 +1,5 @@
-﻿using BookStore.DataAccess.Repository;
+﻿using BookStore.DataAccess;
+using BookStore.DataAccess.Repository;
 using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
 using BookStore.Models.Models;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing.Template;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Plugins;
 using System.Reflection.Metadata.Ecma335;
 
@@ -18,17 +20,17 @@ namespace BookStoreWeb.Areas.Admin.Controllers
 
     public class ProductController : Controller
     {
-        IUnitOfWork _unitOfWork;
+        private readonly ApplicationDbContext _db;
         IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public ProductController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
         {
-            _unitOfWork = unitOfWork;
+            _db = db;
             _webHostEnvironment = webHostEnvironment; 
         }
         public IActionResult Index()
         {
-            List<Product> products = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
+            List<Product> products = _db.Products.Include(u => u.Category).ToList();
 
             return View(products);
         }
@@ -36,8 +38,8 @@ namespace BookStoreWeb.Areas.Admin.Controllers
         {
             ProductVM productVM = new()
             {
-                CategoryList = _unitOfWork.Category
-                 .GetAll().Select(c => new SelectListItem
+                CategoryList = _db.Categories
+                 .Select(c => new SelectListItem
                  {
                      Text = c.Name,
                      Value = c.Id.ToString()
@@ -75,22 +77,22 @@ namespace BookStoreWeb.Areas.Admin.Controllers
                 }
                 if (obj.Product.Id == 0)
                 {
-                    _unitOfWork.Product.Add(obj.Product);
+                    _db.Products.Add(obj.Product);
                 }
                 else
                 {
-                    _unitOfWork.Product.Update(obj.Product);
+                    _db.Products.Update(obj.Product);
 
                 }
-                _unitOfWork.Save();
+                _db.SaveChanges();
                 TempData["Success"] = "Create Product successfully!";
                 return RedirectToAction("Index");
             }
             else {
                 ProductVM productVM = new()
                 {
-                    CategoryList = _unitOfWork.Category
-                    .GetAll().Select(c => new SelectListItem
+                    CategoryList = _db.Categories
+                    .Select(c => new SelectListItem
                     {
                         Text = c.Name,
                         Value = c.Id.ToString()
@@ -106,7 +108,7 @@ namespace BookStoreWeb.Areas.Admin.Controllers
         {
             ProductVM productVM = new()
                 {
-                    CategoryList = _unitOfWork.Category.GetAll().Select(p => new SelectListItem
+                    CategoryList = _db.Categories.Select(p => new SelectListItem
                     {
                         Text = p.Name,
                         Value = p.Id.ToString()
@@ -119,7 +121,7 @@ namespace BookStoreWeb.Areas.Admin.Controllers
                 }
                 else
                 {//update
-                    productVM.Product = _unitOfWork.Product.Get(p => p.Id == id);
+                    productVM.Product = _db.Products.FirstOrDefault(p => p.Id == id);
                     return View(productVM);
                 }
 
@@ -132,8 +134,8 @@ namespace BookStoreWeb.Areas.Admin.Controllers
         {
            if(ModelState.IsValid)
             { 
-            _unitOfWork.Product.Update(obj);
-            _unitOfWork.Save();
+            _db.Products.Update(obj);
+            _db.SaveChanges();
                 TempData["Success"] = "Updated Category Successfully!";
             return RedirectToAction("Index");
         }
@@ -160,14 +162,17 @@ namespace BookStoreWeb.Areas.Admin.Controllers
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll() {
-            List<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
-            return Json(new { data = products });
+            List<Product> products = _db.Products.Include(u => u.Category).ToList();
+
+            return  Json(new { data = products });
+            
+
 
         }
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            var productToBeDeleted = _unitOfWork.Product.Get(u=>u.Id == id);
+            var productToBeDeleted = _db.Products.FirstOrDefault(u=>u.Id == id);
             if (productToBeDeleted == null)
             {
                 return Json(new { success = false, message = "Error while deleting" });
@@ -182,8 +187,8 @@ namespace BookStoreWeb.Areas.Admin.Controllers
                     System.IO.File.Delete(oldImagePath);
                 }
             }
-            _unitOfWork.Product.Remove(productToBeDeleted); 
-            _unitOfWork.Save();
+            _db.Products.Remove(productToBeDeleted); 
+            _db.SaveChanges();
             return Json(new { success = true, message = "Delete Successfully" });
 
         }
